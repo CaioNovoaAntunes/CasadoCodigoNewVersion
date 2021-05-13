@@ -1,7 +1,9 @@
 package br.com.zup.autor
 
 import io.micronaut.http.annotation.*
+import io.micronaut.http.uri.UriBuilder
 import io.micronaut.validation.Validated
+import java.net.http.HttpResponse
 import java.util.*
 import javax.validation.Valid
 import javax.validation.constraints.Email
@@ -11,27 +13,37 @@ import javax.validation.constraints.Email
 class AutorController(val autorRepository: AutorRepository) {
 
     @Post
-    fun cadastrarAutor(@Body @Valid autorRequest: AutorRequest): Autor {
-        return autorRepository.save(autorRequest.toAutor())
-    }
-    @Get
-    fun buscaTudo():List<Autor> = autorRepository.findAll()
+    fun salvaAutor(@Body @Valid autorRequest: AutorRequest): Autor =
+        autorRepository.save(autorRequest.toAutor())
 
-    /*@Get("/{id}")
-    fun searchById(@PathVariable id: Long?): Autor? {
+
+    @Get
+    fun buscaTudo(): List<Autor> = autorRepository.findAll()
+
+    //dominio.com.br/autores/1
+
+    @Get("/{id}")
+    fun buscaPorID(@PathVariable id: Long): Autor? {
+
         val autor: Optional<Autor> = autorRepository.findById(id)
+
         if (autor.isPresent) {
             return autor.get()
         }
-        return null
-    }*/
-    // autores?email=email
-    @Get("/{email}")
-    fun searchByEmail(@QueryValue email: String?): Autor? {
-        val autor: Optional<Autor> = autorRepository.findByEmail(email.toString())
-        if (autor.get().email.isNotEmpty()) {
-            return  autor.get()
-        }
+
         return null
     }
+
+    //localhost:8080/autores?email?email=caio@email.com
+    @Get("/email")
+    fun buscaPorEmail(@QueryValue email: String): io.micronaut.http.HttpResponse<Any> {
+
+        val emailConsultado = autorRepository.findByEmail(email)
+
+        if (emailConsultado.isPresent) io.micronaut.http.HttpResponse.ok(emailConsultado.get())
+
+        return io.micronaut.http.HttpResponse.notFound()
+
+    }
+
 }

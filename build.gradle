@@ -46,7 +46,7 @@ dependencies {
 application {
     mainClass.set("br.com.zup.ApplicationKt")
 }
-java {
+kotlin {
     sourceCompatibility = JavaVersion.toVersion("11")
 }
 
