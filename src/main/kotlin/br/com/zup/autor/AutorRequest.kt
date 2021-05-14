@@ -8,7 +8,9 @@ import javax.validation.constraints.NotBlank
 class AutorRequest(
     @field:NotBlank  val nome: String,
     @field:NotBlank val descricao: String,
-    @field:NotBlank @field: Email val email: String
+    @field:NotBlank @field: Email val email: String,
+    @field:NotBlank val cep:String,
+    @field:NotBlank val numero:String
 ){
     fun toAutor():Autor{
         return Autor(nome,descricao,email)
